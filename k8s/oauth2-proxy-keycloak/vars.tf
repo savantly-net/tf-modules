@@ -29,6 +29,10 @@ variable "keycloak_client_id" {
   default = "terraform"
 }
 
+variable "keycloak_client_secret" {
+  type = string
+}
+
 variable "keycloak_url" {
   type = string
 }
