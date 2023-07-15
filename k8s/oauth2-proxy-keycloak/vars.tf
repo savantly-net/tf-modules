@@ -1,0 +1,91 @@
+variable "kubernetes_cluster_name" {
+  type = string
+}
+
+variable "environment" {
+  type = string
+}
+
+variable "app_name" {
+  type = string
+  default = "portal"
+}
+
+variable "app_secrets" {
+  type = map(string)
+  default = {}
+}
+
+variable "namespace" {
+  type = string
+}
+
+variable "provider_display_name" {
+  type = string
+}
+
+variable "keycloak_client_id" {
+  type = string
+  default = "terraform"
+}
+
+variable "keycloak_url" {
+  type = string
+}
+
+variable "public_host" {
+  type = string
+  default = ""
+}
+
+variable "image_pullPolicy" {
+  type = string
+  default = "IfNotPresent"
+}
+
+variable "cookie_increment" {
+  type = number
+  default = 1
+  description = "Increment to invalidate the cookie secret"
+}
+
+variable "oidc_realm" {
+  type = string
+}
+
+variable "tls_secret_name" {
+  type = string
+}
+
+variable "upstreams" {
+  type = list(string)
+}
+
+variable "helm_cleanup_on_fail" {
+  type = bool
+  default = true
+}
+
+variable "helm_force_update" {
+  type = bool
+  default = false
+}
+
+variable "helm_reuse_values" {
+  type = bool
+  default = false
+}
+
+variable "development_versions" {
+  type = bool
+  default = true
+}
+
+variable "ingress_annotations" {
+  type = map(string)
+  default = {
+      "cert-manager.io/cluster-issuer" = "letsencrypt-prod"
+      "kubernetes.io/ingress.class" = "nginx"
+      "kubernetes.io/tls-acme" = "true"
+  }
+}

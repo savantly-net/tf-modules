@@ -1,0 +1,5 @@
+oauth2-proxy:
+  service:
+    name: CHANGEME
+    port:
+      number: 4180
