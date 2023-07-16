@@ -84,3 +84,13 @@ variable "development_versions" {
   type = bool
   default = true
 }
+
+variable "valid_web_origins" {
+  type = list(string)
+  default = []
+}
+
+variable "valid_redirect_uris" {
+  type = list(string)
+  default = []
+}

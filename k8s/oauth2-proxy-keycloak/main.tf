@@ -18,6 +18,8 @@ locals {
   upstreams              = jsonencode(var.upstreams)
   tls_secret_name        = var.tls_secret_name
   development_versions   = var.development_versions
+  valid_web_origins      = var.valid_web_origins
+  valid_redirect_uris    = var.valid_redirect_uris
 }
 
 data "aws_eks_cluster" "cluster" {
@@ -91,9 +93,19 @@ resource "keycloak_openid_client" "openid_client" {
   service_accounts_enabled     = true
 
   access_type = "CONFIDENTIAL"
-  valid_redirect_uris = [
-    "https://${local.public_host}/*",
-  ]
+  valid_redirect_uris = concat(
+    local.valid_redirect_uris,
+    [
+      "https://${local.public_host}/*",
+    ],
+  )
+  
+  web_origins = concat(
+    local.valid_web_origins,
+    [
+      "https://${local.public_host}",
+    ],
+  )
 
   //login_theme = "keycloak"
 }
@@ -112,7 +124,7 @@ resource "helm_release" "chart" {
   cleanup_on_fail   = local.helm_cleanup_on_fail
   reuse_values      = local.helm_reuse_values
   devel             = local.development_versions
-  version           = "0.1.4"
+  version           = "0.1.5"
   disable_webhooks  = true
 
   values = [
