@@ -22,6 +22,9 @@ locals {
   valid_redirect_uris    = var.valid_redirect_uris
   oauth2_proxy_pass_access_token = var.oauth2_proxy_pass_access_token
   oauth2_proxy_set_xauthrequest = var.oauth2_proxy_set_xauthrequest
+  oauth2_proxy_pass_authorization_header = var.oauth2_proxy_pass_authorization_header
+  oauth2_proxy_set_authorization_header = var.oauth2_proxy_set_authorization_header
+  oauth2_proxy_skip_jwt_bearer_tokens = var.oauth2_proxy_skip_jwt_bearer_tokens
 }
 
 data "aws_eks_cluster" "cluster" {
@@ -126,7 +129,7 @@ resource "helm_release" "chart" {
   cleanup_on_fail   = local.helm_cleanup_on_fail
   reuse_values      = local.helm_reuse_values
   devel             = local.development_versions
-  version           = "0.1.15"
+  version           = "0.1.16"
   disable_webhooks  = true
 
   values = [
@@ -155,6 +158,9 @@ oauth2-proxy:
       standard_logging = true
       pass_access_token = ${local.oauth2_proxy_pass_access_token}
       set_xauthrequest = ${local.oauth2_proxy_set_xauthrequest}
+      pass_authorization_header = ${local.oauth2_proxy_pass_authorization_header}
+      set_authorization_header = ${local.oauth2_proxy_set_authorization_header}
+      skip_jwt_bearer_tokens = ${local.oauth2_proxy_skip_jwt_bearer_tokens}
       ssl_upstream_insecure_skip_verify=true
       skip_provider_button=true
       cookie_secure=false

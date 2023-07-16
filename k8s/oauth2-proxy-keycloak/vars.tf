@@ -104,3 +104,18 @@ variable "oauth2_proxy_set_xauthrequest" {
   type = bool
   default = false
 }
+
+variable "oauth2_proxy_pass_authorization_header" {
+  type = bool
+  default = false
+}
+
+variable "oauth2_proxy_set_authorization_header" {
+  type = bool
+  default = false
+}
+
+variable "oauth2_proxy_skip_jwt_bearer_tokens" {
+  type = bool
+  default = false
+}
