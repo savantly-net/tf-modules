@@ -124,7 +124,7 @@ resource "helm_release" "chart" {
   cleanup_on_fail   = local.helm_cleanup_on_fail
   reuse_values      = local.helm_reuse_values
   devel             = local.development_versions
-  version           = "0.1.10"
+  version           = "0.1.11"
   disable_webhooks  = true
 
   values = [
@@ -146,8 +146,8 @@ oauth2-proxy:
       redirect_url="https://${local.public_host}/oauth2/callback"
       provider="oidc"
       provider_display_name="${local.provider_display_name}"
-      pass_access_token=true
-      #set_xauthrequest=true
+      #pass_access_token=true
+      set_xauthrequest=true
       ssl_upstream_insecure_skip_verify=true
       skip_provider_button=true
       cookie_secure=false
