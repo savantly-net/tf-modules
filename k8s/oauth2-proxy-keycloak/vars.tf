@@ -65,15 +65,15 @@ variable "upstreams" {
   type = list(object({
     id  = string
     path = string
-    rewriteTarget = string
+    rewriteTarget = optional(string)
     uri = string
-    insecureSkipTLSVerify = bool
-    static = bool
-    staticCode = number
-    flushInterval = string
-    passHostHeader = bool
-    proxyWebSockets = bool
-    timeout = string
+    insecureSkipTLSVerify = optional(bool, false)
+    static = optional(bool)
+    staticCode = optional(number)
+    flushInterval = optional(string)
+    passHostHeader = optional(bool, true)
+    proxyWebSockets = optional(bool, true)
+    timeout = optional(string)
   }))
 }
 
