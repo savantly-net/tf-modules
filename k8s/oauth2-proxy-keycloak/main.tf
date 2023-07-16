@@ -152,7 +152,7 @@ ingress:
   dynamic "set" {
     for_each = local.ingress_annotations
     content {
-      name  = "ingress.annotations['${set.key}']"
+      name  = "ingress.annotations.'${set.key}'"
       value = set.value
     }
   }
