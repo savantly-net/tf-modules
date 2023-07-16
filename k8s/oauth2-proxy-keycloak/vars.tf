@@ -124,3 +124,8 @@ variable "oauth2_proxy_extra_args" {
   type = map(string)
   default = {}
 }
+
+variable "oauth2_proxy_alpha_config" {
+  type = map(any)
+  default = {}
+}

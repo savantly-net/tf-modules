@@ -26,6 +26,7 @@ locals {
   oauth2_proxy_set_authorization_header = var.oauth2_proxy_set_authorization_header
   oauth2_proxy_skip_jwt_bearer_tokens = var.oauth2_proxy_skip_jwt_bearer_tokens
   oauth2_proxy_extra_args = jsonencode(var.oauth2_proxy_extra_args)
+  oauth2_proxy_alpha_config = jsonencode(var.oauth2_proxy_alpha_config)
 }
 
 data "aws_eks_cluster" "cluster" {
@@ -130,7 +131,7 @@ resource "helm_release" "chart" {
   cleanup_on_fail   = local.helm_cleanup_on_fail
   reuse_values      = local.helm_reuse_values
   devel             = local.development_versions
-  version           = "0.1.17"
+  version           = "0.1.18"
   disable_webhooks  = true
 
   values = [
@@ -173,6 +174,7 @@ oauth2-proxy:
   ingress:
       enabled: false
   extraArgs: ${local.oauth2_proxy_extra_args}
+  alphaConfig: ${local.oauth2_proxy_alpha_config}
 ingress:
   enabled: true
   annotations:
