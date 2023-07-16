@@ -1,4 +1,6 @@
 {{- if .Values.ingress.enabled -}}
+{{- $root := . -}}
+{{- $oauth2Proxy := index .Subcharts "oauth2-proxy" -}}
 {{- $fullName := include "oauth2-proxy-keycloak.fullname" . -}}
 {{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
@@ -42,9 +44,9 @@ spec:
         paths:
         - backend:
             service:
-              name: {{ .Values.oauth2-proxy.service.name }}
+              name: {{ template "oauth2-proxy.fullname" $oauth2Proxy }}
               port:
-                number: {{ .Values.oauth2-proxy.service.port.number }}
+                number: {{ $oauth2Proxy.Values.service.portNumber }}
           path: /oauth2
           pathType: ImplementationSpecific
     {{- end }}

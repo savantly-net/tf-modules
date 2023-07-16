@@ -1,5 +1,10 @@
 oauth2-proxy:
+#  fullnameOverride: "oauth2-proxy"
   service:
-    name: CHANGEME
-    port:
-      number: 4180
+    portNumber: 4180
+ingress:
+  enabled: true
+  hosts:
+    - host: CHANGEME
+      paths:
+        - /test
