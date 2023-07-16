@@ -34,6 +34,19 @@ locals {
     }
     injectRequestHeaders  = var.oauth2_proxy_inject_request_headers
     injectResponseHeaders = var.oauth2_proxy_inject_response_headers
+    providers = [
+      {
+        id           = "keycloak"
+        clientID     = keycloak_openid_client.openid_client.client_id
+        clientSecret = keycloak_openid_client.openid_client.client_secret
+        provider     = local.oauth2_proxy_provider
+        name         = local.provider_display_name
+        scope        = "openid email profile"
+        oidcConfig = {
+          issuerURL = local.oidc_issuer_url
+        }
+      }
+    ]
     }
   )
 }
@@ -177,20 +190,4 @@ ingress:
     , fileexists("${path.module}/extra-values.yml") ? file("${path.module}/extra-values.yml") : ""
   ]
 
-  set {
-    name = "oauth2-proxy.alphaConfig.providers"
-    value = jsonencode([
-      {
-        id           = "keycloak"
-        clientID     = keycloak_openid_client.openid_client.client_id
-        clientSecret = keycloak_openid_client.openid_client.client_secret
-        provider     = local.oauth2_proxy_provider
-        name         = local.provider_display_name
-        scope        = "openid email profile"
-        oidcConfig = {
-          issuerURL = local.oidc_issuer_url
-        }
-      }
-    ])
-  }
 }
