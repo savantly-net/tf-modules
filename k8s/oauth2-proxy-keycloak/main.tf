@@ -124,7 +124,7 @@ resource "helm_release" "chart" {
   cleanup_on_fail   = local.helm_cleanup_on_fail
   reuse_values      = local.helm_reuse_values
   devel             = local.development_versions
-  version           = "0.1.9"
+  version           = "0.1.10"
   disable_webhooks  = true
 
   values = [
@@ -147,7 +147,7 @@ oauth2-proxy:
       provider="oidc"
       provider_display_name="${local.provider_display_name}"
       pass_access_token=true
-      set_xauthrequest=true
+      #set_xauthrequest=true
       ssl_upstream_insecure_skip_verify=true
       skip_provider_button=true
       cookie_secure=false
@@ -163,23 +163,6 @@ ingress:
       cert-manager.io/cluster-issuer: letsencrypt-prod
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
-      nginx.ingress.kubernetes.io/configuration-snippet: |
-        set $allow_origin $http_origin;
-        # Cors Preflight methods needs additional options and different Return Code
-        if ($request_method = 'OPTIONS') {
-          more_set_headers 'Access-Control-Allow-Origin: $allow_origin';
-          more_set_headers 'Access-Control-Allow-Credentials: true';
-          more_set_headers 'Access-Control-Allow-Methods: GET, PUT, POST, DELETE, PATCH, OPTIONS';
-          more_set_headers 'Access-Control-Allow-Headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Client-Identifier,sentry-trace,baggage';
-          more_set_headers 'Access-Control-Max-Age: 1728000';
-          more_set_headers 'Content-Type: text/plain charset=UTF-8';
-          more_set_headers 'Content-Length: 0';
-          return 204;
-        }
-        more_set_headers 'Access-Control-Allow-Origin: $allow_origin';
-        more_set_headers 'Access-Control-Allow-Credentials: true';
-        more_set_headers 'Access-Control-Allow-Methods: GET, PUT, POST, DELETE, PATCH, OPTIONS';
-        more_set_headers 'Access-Control-Allow-Headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Client-Identifier,sentry-trace,baggage';
   hosts:
   - host: ${local.public_host}
   tls:
