@@ -4,6 +4,30 @@ oauth2-proxy:
     portNumber: 4180
 ingress:
   enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-buffering: "on"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: 128k
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
+    nginx.ingress.kubernetes.io/proxy-body-size: 50m
+    nginx.ingress.kubernetes.io/proxy-max-temp-file-size: "4096m"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      set $allow_origin $http_origin;
+      # Cors Preflight methods needs additional options and different Return Code
+      if ($request_method = 'OPTIONS') {
+        more_set_headers 'Access-Control-Allow-Origin: $allow_origin';
+        more_set_headers 'Access-Control-Allow-Credentials: true';
+        more_set_headers 'Access-Control-Allow-Methods: GET, PUT, POST, DELETE, PATCH, OPTIONS';
+        more_set_headers 'Access-Control-Allow-Headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Client-Identifier,sentry-trace,baggage';
+        more_set_headers 'Access-Control-Max-Age: 1728000';
+        more_set_headers 'Content-Type: text/plain charset=UTF-8';
+        more_set_headers 'Content-Length: 0';
+        return 204;
+      }
+      more_set_headers 'Access-Control-Allow-Origin: $allow_origin';
+      more_set_headers 'Access-Control-Allow-Credentials: true';
+      more_set_headers 'Access-Control-Allow-Methods: GET, PUT, POST, DELETE, PATCH, OPTIONS';
+      more_set_headers 'Access-Control-Allow-Headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Client-Identifier,sentry-trace,baggage';
+
   hosts:
     - host: CHANGEME
       paths:
