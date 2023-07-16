@@ -113,6 +113,7 @@ resource "helm_release" "chart" {
   reuse_values      = local.helm_reuse_values
   devel             = local.development_versions
   version           = "0.1.4"
+  disable_webhooks  = true
 
   values = [
     fileexists("${path.module}/values.yml") ? file("${path.module}/values.yml") : <<EOF
