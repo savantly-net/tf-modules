@@ -84,12 +84,3 @@ variable "development_versions" {
   type = bool
   default = true
 }
-
-variable "ingress_annotations" {
-  type = map(string)
-  default = {
-      "cert-manager.io/cluster-issuer" = "letsencrypt-prod"
-      "kubernetes.io/ingress.class" = "nginx"
-      "kubernetes.io/tls-acme" = "true"
-  }
-}

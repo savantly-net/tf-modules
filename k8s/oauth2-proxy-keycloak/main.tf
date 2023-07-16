@@ -18,7 +18,6 @@ locals {
   upstreams              = jsonencode(var.upstreams)
   tls_secret_name        = var.tls_secret_name
   development_versions   = var.development_versions
-  ingress_annotations    = var.ingress_annotations
 }
 
 data "aws_eks_cluster" "cluster" {
@@ -138,7 +137,10 @@ oauth2-proxy:
       enabled: false
 ingress:
   enabled: true
-  annotations: {}
+  annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
   hosts:
   - ${local.public_host}
   tls:
@@ -149,11 +151,4 @@ ingress:
     , fileexists("${path.module}/extra-values.yml") ? file("${path.module}/extra-values.yml") : ""
   ]
 
-  dynamic "set" {
-    for_each = local.ingress_annotations
-    content {
-      name  = "ingress.annotations.\"${set.key}\""
-      value = set.value
-    }
-  }
 }
