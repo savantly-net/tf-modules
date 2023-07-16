@@ -1,32 +1,41 @@
 locals {
-  cluster_name           = var.kubernetes_cluster_name
-  provider_display_name  = var.provider_display_name
-  app_name               = var.app_name
-  public_host            = var.public_host
-  namespace              = var.namespace
-  image_pullPolicy       = var.image_pullPolicy
-  cookie_increment       = var.cookie_increment
-  oidc_realm             = var.oidc_realm
-  keycloak_client_id     = var.keycloak_client_id
-  keycloak_client_secret = var.keycloak_client_secret
-  keycloak_url           = var.keycloak_url
-  oidc_issuer_url        = "${var.keycloak_url}/realms/${var.oidc_realm}"
-  helm_force_update      = var.helm_force_update
-  helm_cleanup_on_fail   = var.helm_cleanup_on_fail
-  helm_reuse_values      = var.helm_reuse_values
-  app_secrets            = var.app_secrets
-  upstreams              = jsonencode(var.upstreams)
-  tls_secret_name        = var.tls_secret_name
-  development_versions   = var.development_versions
-  valid_web_origins      = var.valid_web_origins
-  valid_redirect_uris    = var.valid_redirect_uris
-  oauth2_proxy_pass_access_token = var.oauth2_proxy_pass_access_token
-  oauth2_proxy_set_xauthrequest = var.oauth2_proxy_set_xauthrequest
+  cluster_name                           = var.kubernetes_cluster_name
+  provider_display_name                  = var.provider_display_name
+  app_name                               = var.app_name
+  public_host                            = var.public_host
+  namespace                              = var.namespace
+  image_pullPolicy                       = var.image_pullPolicy
+  cookie_increment                       = var.cookie_increment
+  oidc_realm                             = var.oidc_realm
+  keycloak_client_id                     = var.keycloak_client_id
+  keycloak_client_secret                 = var.keycloak_client_secret
+  keycloak_url                           = var.keycloak_url
+  oidc_issuer_url                        = "${var.keycloak_url}/realms/${var.oidc_realm}"
+  helm_force_update                      = var.helm_force_update
+  helm_cleanup_on_fail                   = var.helm_cleanup_on_fail
+  helm_reuse_values                      = var.helm_reuse_values
+  app_secrets                            = var.app_secrets
+  tls_secret_name                        = var.tls_secret_name
+  development_versions                   = var.development_versions
+  valid_web_origins                      = var.valid_web_origins
+  valid_redirect_uris                    = var.valid_redirect_uris
+  oauth2_proxy_provider                  = var.oauth2_proxy_provider
+  oauth2_proxy_pass_access_token         = var.oauth2_proxy_pass_access_token
+  oauth2_proxy_set_xauthrequest          = var.oauth2_proxy_set_xauthrequest
   oauth2_proxy_pass_authorization_header = var.oauth2_proxy_pass_authorization_header
-  oauth2_proxy_set_authorization_header = var.oauth2_proxy_set_authorization_header
-  oauth2_proxy_skip_jwt_bearer_tokens = var.oauth2_proxy_skip_jwt_bearer_tokens
-  oauth2_proxy_extra_args = jsonencode(var.oauth2_proxy_extra_args)
-  oauth2_proxy_alpha_config = jsonencode(var.oauth2_proxy_alpha_config)
+  oauth2_proxy_set_authorization_header  = var.oauth2_proxy_set_authorization_header
+  oauth2_proxy_skip_jwt_bearer_tokens    = var.oauth2_proxy_skip_jwt_bearer_tokens
+  oauth2_proxy_extra_args                = jsonencode(var.oauth2_proxy_extra_args)
+
+  mergedAlphaConfig = jsonencode(merge({
+    enabled = true,
+    upstreamConfig = {
+      upstreams = var.upstreams
+    }
+    injectRequestHeaders  = var.oauth2_proxy_inject_request_headers
+    injectResponseHeaders = var.oauth2_proxy_inject_response_headers
+    }, local.oauth2_proxy_alpha_config)
+  )
 }
 
 data "aws_eks_cluster" "cluster" {
@@ -106,7 +115,7 @@ resource "keycloak_openid_client" "openid_client" {
       "https://${local.public_host}/*",
     ],
   )
-  
+
   web_origins = concat(
     local.valid_web_origins,
     [
@@ -148,33 +157,10 @@ oauth2-proxy:
     cookieName: "${local.app_name}"
     configFile: |-
       email_domains = [ "*" ]
-      upstreams =  ${local.upstreams}
-      oidc_issuer_url="${local.oidc_issuer_url}"
-      redirect_url="https://${local.public_host}/oauth2/callback"
-      provider="oidc"
-      provider_display_name="${local.provider_display_name}"
-      request_logging = true
-      #request_logging_format = "{{.Client}} - {{.Username}} [{{.Timestamp}}] {{.Host}} {{.RequestMethod}} {{.Upstream}} {{.RequestURI}} {{.Protocol}} {{.UserAgent}} {{.StatusCode}} {{.ResponseSize}} {{.RequestDuration}}"
-      auth_logging = true
-      #auth_logging_format = "{{.Client}} - {{.Username}} [{{.Timestamp}}] [{{.Status}}] {{.Message}}"
-      standard_logging = true
-      pass_access_token = ${local.oauth2_proxy_pass_access_token}
-      set_xauthrequest = ${local.oauth2_proxy_set_xauthrequest}
-      pass_authorization_header = ${local.oauth2_proxy_pass_authorization_header}
-      set_authorization_header = ${local.oauth2_proxy_set_authorization_header}
-      skip_jwt_bearer_tokens = ${local.oauth2_proxy_skip_jwt_bearer_tokens}
-      ssl_upstream_insecure_skip_verify=true
-      skip_provider_button=true
-      cookie_secure=false
-      cookie_httponly=false
-      cookie_refresh="1h"
-      cookie_domains=[ "${local.public_host}" ]
-      cookie_path="/"
-      whitelist_domains=[ "${local.public_host}" ]
   ingress:
       enabled: false
   extraArgs: ${local.oauth2_proxy_extra_args}
-  alphaConfig: ${local.oauth2_proxy_alpha_config}
+  alphaConfig: ${local.mergedAlphaConfig}
 ingress:
   enabled: true
   annotations:
@@ -192,7 +178,19 @@ ingress:
   ]
 
   set {
-    name  = "oauth2-proxy.config.clientSecret"
-    value = keycloak_openid_client.openid_client.client_secret
+    name = "oauth2-proxy.alphaConfig.providers"
+    value = jsonencode([
+      {
+        id           = "keycloak"
+        clientID     = keycloak_openid_client.openid_client.client_id
+        clientSecret = keycloak_openid_client.openid_client.client_secret
+        provider     = local.oauth2_proxy_provider
+        name         = local.provider_display_name
+        scope        = "openid email profile"
+        oidcConfig = {
+          issuerURL = local.oidc_issuer_url
+        }
+      }
+    ])
   }
 }

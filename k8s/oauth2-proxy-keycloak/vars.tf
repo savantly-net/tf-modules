@@ -62,7 +62,19 @@ variable "tls_secret_name" {
 }
 
 variable "upstreams" {
-  type = list(string)
+  type = list(object({
+    id  = string
+    path = string
+    rewriteTarget = string
+    uri = string
+    insecureSkipTLSVerify = bool
+    static = bool
+    staticCode = number
+    flushInterval = string
+    passHostHeader = bool
+    proxyWebSockets = bool
+    timeout = string
+  }))
 }
 
 variable "helm_cleanup_on_fail" {
@@ -95,6 +107,11 @@ variable "valid_redirect_uris" {
   default = []
 }
 
+variable "oauth2_proxy_provider" {
+  type = string
+  default = "oidc"
+}
+
 variable "oauth2_proxy_pass_access_token" {
   type = bool
   default = false
@@ -125,7 +142,21 @@ variable "oauth2_proxy_extra_args" {
   default = {}
 }
 
-variable "oauth2_proxy_alpha_config" {
-  type = any
-  default = {}
+variable "oauth2_proxy_inject_request_headers" {
+  type = list(any)
+  default = [
+      {
+        name = "x-forwarded-access-token"
+        values = [
+          {
+            claim = "access_token"
+          }
+        ]
+      }
+    ]
+}
+
+variable "oauth2_proxy_inject_response_headers" {
+  type = list(any)
+  default = []
 }
