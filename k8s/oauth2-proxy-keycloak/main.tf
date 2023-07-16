@@ -152,8 +152,8 @@ oauth2-proxy:
       skip_provider_button=true
       cookie_secure=false
       cookie_httponly=false
-      cookie_refresh=1h
-      cookie_expiry=168h
+      cookie_refresh="1h"
+      cookie_expiry="168h"
       cookie_domain="${local.public_host}"
       cookie_path="/"
   ingress:
