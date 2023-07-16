@@ -124,7 +124,7 @@ resource "helm_release" "chart" {
   cleanup_on_fail   = local.helm_cleanup_on_fail
   reuse_values      = local.helm_reuse_values
   devel             = local.development_versions
-  version           = "0.1.7"
+  version           = "0.1.8"
   disable_webhooks  = true
 
   values = [
@@ -151,6 +151,11 @@ oauth2-proxy:
       ssl_upstream_insecure_skip_verify=true
       skip_provider_button=true
       cookie_secure=false
+      cookie_httponly=false
+      cookie_refresh=1h
+      cookie_expiry=168h
+      cookie_domain="${local.public_host}"
+      cookie_path="/"
   ingress:
       enabled: false
 ingress:
