@@ -124,7 +124,7 @@ resource "helm_release" "chart" {
   cleanup_on_fail   = local.helm_cleanup_on_fail
   reuse_values      = local.helm_reuse_values
   devel             = local.development_versions
-  version           = "0.1.12"
+  version           = "0.1.13"
   disable_webhooks  = true
 
   values = [
@@ -147,9 +147,9 @@ oauth2-proxy:
       provider="oidc"
       provider_display_name="${local.provider_display_name}"
       request_logging = true
-      request_logging_format = "{{.Client}} - {{.Username}} [{{.Timestamp}}] {{.Host}} {{.RequestMethod}} {{.Upstream}} {{.RequestURI}} {{.Protocol}} {{.UserAgent}} {{.StatusCode}} {{.ResponseSize}} {{.RequestDuration}}"
+      #request_logging_format = "{{.Client}} - {{.Username}} [{{.Timestamp}}] {{.Host}} {{.RequestMethod}} {{.Upstream}} {{.RequestURI}} {{.Protocol}} {{.UserAgent}} {{.StatusCode}} {{.ResponseSize}} {{.RequestDuration}}"
       auth_logging = true
-      auth_logging_format = "{{.Client}} - {{.Username}} [{{.Timestamp}}] [{{.Status}}] {{.Message}}"
+      #auth_logging_format = "{{.Client}} - {{.Username}} [{{.Timestamp}}] [{{.Status}}] {{.Message}}"
       standard_logging = true
       pass_access_token=true
       set_xauthrequest=true
@@ -160,6 +160,7 @@ oauth2-proxy:
       cookie_refresh="1h"
       cookie_domains=[ "${local.public_host}" ]
       cookie_path="/"
+      whitelist_domains=[ "${local.public_host}" ]
   ingress:
       enabled: false
 ingress:
