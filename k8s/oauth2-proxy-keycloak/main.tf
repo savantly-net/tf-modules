@@ -43,13 +43,18 @@ locals {
           provider     = local.oauth2_proxy_provider
           name         = local.provider_display_name
           scope        = "openid email profile"
+
+          loginURL    = "${local.oidc_issuer_url}/protocol/openid-connect/auth"
+          redeemURL   = "${local.oidc_issuer_url}/protocol/openid-connect/token"
+          profileURL  = "${local.oidc_issuer_url}/protocol/openid-connect/userinfo"
+          validateURL = "${local.oidc_issuer_url}/protocol/openid-connect/userinfo"
           oidcConfig = {
-            issuerURL = local.oidc_issuer_url
-            insecureAllowUnverifiedEmail = false
-            insecureSkipIssuerVerification = false
-            emailClaim = "email"
-            groupsClaim = "groups"
-            userIDClaim = "sub"
+            issuerURL                      = local.oidc_issuer_url
+            insecureAllowUnverifiedEmail   = true
+            insecureSkipIssuerVerification = true
+            emailClaim                     = "email"
+            groupsClaim                    = "groups"
+            userIDClaim                    = "sub"
             audienceClaims = [
               "aud"
             ]
@@ -190,6 +195,12 @@ ingress:
       cert-manager.io/cluster-issuer: letsencrypt-prod
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/proxy-buffering: "on"
+      nginx.ingress.kubernetes.io/proxy-buffer-size: 128k
+      nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
+      nginx.ingress.kubernetes.io/proxy-body-size: 50m
+      nginx.ingress.kubernetes.io/proxy-max-temp-file-size: "4096m"
+      nginx.ingress.kubernetes.io/auth-response-headers: X-Auth-Request-Access-Token, Authorization
   hosts:
   - host: ${local.public_host}
   tls:
