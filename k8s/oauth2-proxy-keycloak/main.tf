@@ -142,7 +142,7 @@ ingress:
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
   hosts:
-  - ${local.public_host}
+  - host: ${local.public_host}
   tls:
   - hosts:
     - ${local.public_host}
