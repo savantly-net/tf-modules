@@ -100,7 +100,7 @@ resource "keycloak_openid_client" "openid_client" {
 
 resource "helm_release" "chart" {
   name              = local.app_name
-  chart             = "./chart"
+  chart             = "${path.module}/chart"
   verify            = false
   namespace         = local.namespace
   atomic            = true
