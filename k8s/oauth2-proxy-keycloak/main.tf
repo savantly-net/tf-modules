@@ -45,6 +45,14 @@ locals {
           scope        = "openid email profile"
           oidcConfig = {
             issuerURL = local.oidc_issuer_url
+            insecureAllowUnverifiedEmail = false
+            insecureSkipIssuerVerification = false
+            emailClaim = "email"
+            groupsClaim = "groups"
+            userIDClaim = "sub"
+            audienceClaims = [
+              "aud"
+            ]
           }
         }
       ]
