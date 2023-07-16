@@ -94,3 +94,13 @@ variable "valid_redirect_uris" {
   type = list(string)
   default = []
 }
+
+variable "oauth2_proxy_pass_access_token" {
+  type = bool
+  default = false
+}
+
+variable "oauth2_proxy_set_xauthrequest" {
+  type = bool
+  default = false
+}

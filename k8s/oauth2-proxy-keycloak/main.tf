@@ -20,6 +20,8 @@ locals {
   development_versions   = var.development_versions
   valid_web_origins      = var.valid_web_origins
   valid_redirect_uris    = var.valid_redirect_uris
+  oauth2_proxy_pass_access_token = var.oauth2_proxy_pass_access_token
+  oauth2_proxy_set_xauthrequest = var.oauth2_proxy_set_xauthrequest
 }
 
 data "aws_eks_cluster" "cluster" {
@@ -124,7 +126,7 @@ resource "helm_release" "chart" {
   cleanup_on_fail   = local.helm_cleanup_on_fail
   reuse_values      = local.helm_reuse_values
   devel             = local.development_versions
-  version           = "0.1.14"
+  version           = "0.1.15"
   disable_webhooks  = true
 
   values = [
@@ -151,8 +153,8 @@ oauth2-proxy:
       auth_logging = true
       #auth_logging_format = "{{.Client}} - {{.Username}} [{{.Timestamp}}] [{{.Status}}] {{.Message}}"
       standard_logging = true
-      #pass_access_token=true
-      #set_xauthrequest=true
+      pass_access_token = ${local.oauth2_proxy_pass_access_token}
+      set_xauthrequest = ${local.oauth2_proxy_set_xauthrequest}
       ssl_upstream_insecure_skip_verify=true
       skip_provider_button=true
       cookie_secure=false
