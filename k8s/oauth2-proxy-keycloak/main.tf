@@ -164,8 +164,6 @@ ingress:
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
       nginx.ingress.kubernetes.io/configuration-snippet: |
-        auth_request_set $token  $upstream_http_x_auth_request_access_token;
-        proxy_set_header X-Access-Token $token;
         set $allow_origin $http_origin;
         # Cors Preflight methods needs additional options and different Return Code
         if ($request_method = 'OPTIONS') {
