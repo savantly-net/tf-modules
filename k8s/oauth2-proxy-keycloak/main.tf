@@ -123,7 +123,6 @@ oauth2-proxy:
     # Add config annotations
     annotations: {}
     clientID: ${keycloak_openid_client.openid_client.client_id}
-    clientSecret: ${keycloak_openid_client.openid_client.client_secret}
     cookieSecret: ${random_id.cookie_secret.id}
     # The name of the cookie that oauth2-proxy will create
     # If left empty, it will default to the release name
@@ -152,4 +151,8 @@ ingress:
     , fileexists("${path.module}/extra-values.yml") ? file("${path.module}/extra-values.yml") : ""
   ]
 
+  set {
+    name  = "oauth2-proxy.config.clientSecret"
+    value = keycloak_openid_client.openid_client.client_secret
+  }
 }
