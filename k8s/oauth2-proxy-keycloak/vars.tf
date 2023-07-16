@@ -126,6 +126,6 @@ variable "oauth2_proxy_extra_args" {
 }
 
 variable "oauth2_proxy_alpha_config" {
-  type = map(any)
+  type = object
   default = {}
 }
