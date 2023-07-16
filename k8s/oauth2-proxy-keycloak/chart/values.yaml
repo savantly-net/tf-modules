@@ -4,6 +4,7 @@ oauth2-proxy:
     portNumber: 4180
 ingress:
   enabled: true
+  className: nginx
   hosts:
     - host: CHANGEME
       paths:
