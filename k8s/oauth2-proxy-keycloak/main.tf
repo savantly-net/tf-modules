@@ -28,8 +28,8 @@ locals {
   oauth2_proxy_extra_args                = jsonencode(var.oauth2_proxy_extra_args)
 
   mergedAlphaConfig = jsonencode({
+    enabled = true,
     configData = {
-      enabled = true,
       upstreamConfig = {
         upstreams = var.upstreams
       }
@@ -155,7 +155,7 @@ resource "helm_release" "chart" {
   cleanup_on_fail   = local.helm_cleanup_on_fail
   reuse_values      = local.helm_reuse_values
   devel             = local.development_versions
-  version           = "0.2.1"
+  version           = "0.2.2"
   disable_webhooks  = true
 
   values = [
