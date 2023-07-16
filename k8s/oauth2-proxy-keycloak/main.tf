@@ -124,7 +124,7 @@ resource "helm_release" "chart" {
   cleanup_on_fail   = local.helm_cleanup_on_fail
   reuse_values      = local.helm_reuse_values
   devel             = local.development_versions
-  version           = "0.1.8"
+  version           = "0.1.9"
   disable_webhooks  = true
 
   values = [
@@ -138,7 +138,7 @@ oauth2-proxy:
     cookieSecret: ${random_id.cookie_secret.id}
     # The name of the cookie that oauth2-proxy will create
     # If left empty, it will default to the release name
-    cookieName: ""
+    cookieName: "${local.app_name}"
     configFile: |-
       email_domains = [ "*" ]
       upstreams =  ${local.upstreams}
@@ -153,8 +153,7 @@ oauth2-proxy:
       cookie_secure=false
       cookie_httponly=false
       cookie_refresh="1h"
-      cookie_expiry="168h"
-      cookie_domain="${local.public_host}"
+      cookie_domains=[ "${local.public_host}" ]
       cookie_path="/"
   ingress:
       enabled: false
@@ -164,6 +163,25 @@ ingress:
       cert-manager.io/cluster-issuer: letsencrypt-prod
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/configuration-snippet: |
+        auth_request_set $token  $upstream_http_x_auth_request_access_token;
+        proxy_set_header X-Access-Token $token;
+        set $allow_origin $http_origin;
+        # Cors Preflight methods needs additional options and different Return Code
+        if ($request_method = 'OPTIONS') {
+          more_set_headers 'Access-Control-Allow-Origin: $allow_origin';
+          more_set_headers 'Access-Control-Allow-Credentials: true';
+          more_set_headers 'Access-Control-Allow-Methods: GET, PUT, POST, DELETE, PATCH, OPTIONS';
+          more_set_headers 'Access-Control-Allow-Headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Client-Identifier,sentry-trace,baggage';
+          more_set_headers 'Access-Control-Max-Age: 1728000';
+          more_set_headers 'Content-Type: text/plain charset=UTF-8';
+          more_set_headers 'Content-Length: 0';
+          return 204;
+        }
+        more_set_headers 'Access-Control-Allow-Origin: $allow_origin';
+        more_set_headers 'Access-Control-Allow-Credentials: true';
+        more_set_headers 'Access-Control-Allow-Methods: GET, PUT, POST, DELETE, PATCH, OPTIONS';
+        more_set_headers 'Access-Control-Allow-Headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Client-Identifier,sentry-trace,baggage';
   hosts:
   - host: ${local.public_host}
   tls:
