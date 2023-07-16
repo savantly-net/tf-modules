@@ -28,25 +28,27 @@ locals {
   oauth2_proxy_extra_args                = jsonencode(var.oauth2_proxy_extra_args)
 
   mergedAlphaConfig = jsonencode({
-    enabled = true,
-    upstreamConfig = {
-      upstreams = var.upstreams
-    }
-    injectRequestHeaders  = var.oauth2_proxy_inject_request_headers
-    injectResponseHeaders = var.oauth2_proxy_inject_response_headers
-    providers = [
-      {
-        id           = "keycloak"
-        clientID     = keycloak_openid_client.openid_client.client_id
-        clientSecret = keycloak_openid_client.openid_client.client_secret
-        provider     = local.oauth2_proxy_provider
-        name         = local.provider_display_name
-        scope        = "openid email profile"
-        oidcConfig = {
-          issuerURL = local.oidc_issuer_url
-        }
+    configData = {
+      enabled = true,
+      upstreamConfig = {
+        upstreams = var.upstreams
       }
-    ]
+      injectRequestHeaders  = var.oauth2_proxy_inject_request_headers
+      injectResponseHeaders = var.oauth2_proxy_inject_response_headers
+      providers = [
+        {
+          id           = "keycloak"
+          clientID     = keycloak_openid_client.openid_client.client_id
+          clientSecret = keycloak_openid_client.openid_client.client_secret
+          provider     = local.oauth2_proxy_provider
+          name         = local.provider_display_name
+          scope        = "openid email profile"
+          oidcConfig = {
+            issuerURL = local.oidc_issuer_url
+          }
+        }
+      ]
+    }
     }
   )
 }
