@@ -119,3 +119,8 @@ variable "oauth2_proxy_skip_jwt_bearer_tokens" {
   type = bool
   default = false
 }
+
+variable "oauth2_proxy_extra_args" {
+  type = map(string)
+  default = {}
+}
