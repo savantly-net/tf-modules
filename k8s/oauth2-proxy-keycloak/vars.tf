@@ -147,6 +147,7 @@ variable "oauth2_proxy_inject_request_headers" {
   default = [
       {
         name = "x-forwarded-access-token"
+        preserveRequestValue = true
         values = [
           {
             claim = "access_token"
