@@ -27,14 +27,14 @@ locals {
   oauth2_proxy_skip_jwt_bearer_tokens    = var.oauth2_proxy_skip_jwt_bearer_tokens
   oauth2_proxy_extra_args                = jsonencode(var.oauth2_proxy_extra_args)
 
-  mergedAlphaConfig = jsonencode(merge({
+  mergedAlphaConfig = jsonencode({
     enabled = true,
     upstreamConfig = {
       upstreams = var.upstreams
     }
     injectRequestHeaders  = var.oauth2_proxy_inject_request_headers
     injectResponseHeaders = var.oauth2_proxy_inject_response_headers
-    }, local.oauth2_proxy_alpha_config)
+    }
   )
 }
 
