@@ -124,7 +124,7 @@ resource "helm_release" "chart" {
   cleanup_on_fail   = local.helm_cleanup_on_fail
   reuse_values      = local.helm_reuse_values
   devel             = local.development_versions
-  version           = "0.1.13"
+  version           = "0.1.14"
   disable_webhooks  = true
 
   values = [
@@ -151,8 +151,8 @@ oauth2-proxy:
       auth_logging = true
       #auth_logging_format = "{{.Client}} - {{.Username}} [{{.Timestamp}}] [{{.Status}}] {{.Message}}"
       standard_logging = true
-      pass_access_token=true
-      set_xauthrequest=true
+      #pass_access_token=true
+      #set_xauthrequest=true
       ssl_upstream_insecure_skip_verify=true
       skip_provider_button=true
       cookie_secure=false
