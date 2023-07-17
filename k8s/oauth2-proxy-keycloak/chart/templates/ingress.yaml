@@ -47,7 +47,7 @@ spec:
               name: {{ template "oauth2-proxy.fullname" $oauth2Proxy }}
               port:
                 number: {{ $oauth2Proxy.Values.service.portNumber }}
-          path: /oauth2
+          path: /
           pathType: ImplementationSpecific
     {{- end }}
 {{- end }}
