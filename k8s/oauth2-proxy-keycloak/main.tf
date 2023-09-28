@@ -5,7 +5,8 @@ locals {
   public_host                            = var.public_host
   namespace                              = var.namespace
   image_pullPolicy                       = var.image_pullPolicy
-  cookie_increment                       = var.cookie_increment
+  cookie_secret                          = var.cookie_secret
+  cookie_name                            = var.cookie_name ? var.cookie_name : var.app_name
   oidc_realm                             = var.oidc_realm
   keycloak_client_id                     = var.keycloak_client_id
   keycloak_client_secret                 = var.keycloak_client_secret
@@ -101,14 +102,6 @@ resource "random_password" "password" {
   special = false
 }
 
-resource "random_id" "cookie_secret" {
-  keepers = {
-    # Generate a new id each time we increment
-    cookie_increment = local.cookie_increment
-  }
-  byte_length = 32
-}
-
 resource "kubernetes_secret" "app_secrets" {
   metadata {
     name      = "${local.app_name}-secrets"
@@ -179,10 +172,10 @@ oauth2-proxy:
     # Add config annotations
     annotations: {}
     clientID: ${keycloak_openid_client.openid_client.client_id}
-    cookieSecret: ${random_id.cookie_secret.id}
+    cookieSecret: ${var.cookie_secret}
     # The name of the cookie that oauth2-proxy will create
     # If left empty, it will default to the release name
-    cookieName: "${local.app_name}"
+    cookieName: "${local.cookie_name}"
     configFile: |-
       email_domains = [ "*" ]
   ingress:

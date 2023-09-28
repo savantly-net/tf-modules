@@ -47,10 +47,14 @@ variable "image_pullPolicy" {
   default = "IfNotPresent"
 }
 
-variable "cookie_increment" {
-  type = number
-  default = 1
-  description = "Increment to invalidate the cookie secret"
+variable "cookie_name" {
+  type = string
+  default = "_sv_oauth2_proxy"
+}
+
+variable "cookie_secret" {
+  type = string
+  description = "The cookie secret should be the same across all instances of oauth2-proxy in a cluster. It should be 16, 24, or 32 bytes long."
 }
 
 variable "oidc_realm" {
