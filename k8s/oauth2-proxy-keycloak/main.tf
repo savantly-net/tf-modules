@@ -5,7 +5,7 @@ locals {
   public_host                            = var.public_host
   namespace                              = var.namespace
   image_pullPolicy                       = var.image_pullPolicy
-  cookie_name                            = var.cookie_name ? var.cookie_name : var.app_name
+  cookie_name                            = var.cookie_name != "" ? var.cookie_name : var.app_name
   oidc_realm                             = var.oidc_realm
   keycloak_client_id                     = var.keycloak_client_id
   keycloak_client_secret                 = var.keycloak_client_secret
