@@ -44,6 +44,8 @@ locals {
           validateURL = var.oidc_user_info_url
           oidcConfig = {
             issuerURL                      = var.oidc_issuer_url
+            jwksURL                        = var.oidc_jwks_url
+            skipDiscovery                  = true
             insecureAllowUnverifiedEmail   = true
             insecureSkipIssuerVerification = true
             emailClaim                     = "email"

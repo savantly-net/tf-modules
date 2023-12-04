@@ -45,6 +45,10 @@ variable "oidc_user_info_url" {
   type = string
 }
 
+variable "oidc_jwks_url" {
+  type = string
+}
+
 variable "oidc_scope" {
   type = string
   default = "openid email profile"
