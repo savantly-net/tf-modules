@@ -1,7 +1,3 @@
-variable "kubernetes_cluster_name" {
-  type = string
-}
-
 variable "environment" {
   type = string
 }
@@ -30,10 +26,6 @@ variable "oidc_client_id" {
 }
 
 variable "oidc_client_secret" {
-  type = string
-}
-
-variable "oidc_url" {
   type = string
 }
 

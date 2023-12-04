@@ -1,14 +1,10 @@
 locals {
-  cluster_name                           = var.kubernetes_cluster_name
   provider_display_name                  = var.provider_display_name
   app_name                               = var.app_name
   public_host                            = var.public_host
   namespace                              = var.namespace
   image_pullPolicy                       = var.image_pullPolicy
   cookie_name                            = var.cookie_name != "" ? var.cookie_name : var.app_name
-  oidc_client_id                     = var.oidc_client_id
-  oidc_client_secret                 = var.oidc_client_secret
-  oidc_url                           = var.oidc_url
   helm_force_update                      = var.helm_force_update
   helm_cleanup_on_fail                   = var.helm_cleanup_on_fail
   helm_reuse_values                      = var.helm_reuse_values
