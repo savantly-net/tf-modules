@@ -84,7 +84,6 @@ resource "helm_release" "chart" {
   cleanup_on_fail   = local.helm_cleanup_on_fail
   reuse_values      = local.helm_reuse_values
   devel             = local.development_versions
-  version           = "0.2.3"
   disable_webhooks  = true
 
   values = [
