@@ -1,7 +1,7 @@
 {{- if .Values.ingress.enabled -}}
 {{- $root := . -}}
 {{- $oauth2Proxy := index .Subcharts "oauth2-proxy" -}}
-{{- $fullName := include "oauth2-proxy.fullname" . -}}
+{{- $fullName := include "oauth2-proxy-wrapper.fullname" . -}}
 {{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
   {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
@@ -18,7 +18,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "oauth2-proxy.labels" . | nindent 4 }}
+    {{- include "oauth2-proxy-wrapper.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}

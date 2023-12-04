@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "oauth2-proxy.name" -}}
+{{- define "oauth2-proxy-wrapper.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "oauth2-proxy.fullname" -}}
+{{- define "oauth2-proxy-wrapper.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "oauth2-proxy.chart" -}}
+{{- define "oauth2-proxy-wrapper.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "oauth2-proxy.labels" -}}
-helm.sh/chart: {{ include "oauth2-proxy.chart" . }}
-{{ include "oauth2-proxy.selectorLabels" . }}
+{{- define "oauth2-proxy-wrapper.labels" -}}
+helm.sh/chart: {{ include "oauth2-proxy-wrapper.chart" . }}
+{{ include "oauth2-proxy-wrapper.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "oauth2-proxy.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "oauth2-proxy.name" . }}
+{{- define "oauth2-proxy-wrapper.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "oauth2-proxy-wrapper.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "oauth2-proxy.serviceAccountName" -}}
+{{- define "oauth2-proxy-wrapper.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "oauth2-proxy.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "oauth2-proxy-wrapper.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
