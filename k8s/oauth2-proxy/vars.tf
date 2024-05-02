@@ -179,3 +179,8 @@ variable "oauth2_proxy_inject_response_headers" {
   type = list(any)
   default = []
 }
+
+variable "oauth2_proxy_raw_path" {
+  type = bool
+  default = false
+}
