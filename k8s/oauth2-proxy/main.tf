@@ -25,6 +25,7 @@ locals {
     enabled = true,
     configData = {
       upstreamConfig = {
+        proxyRawPath = var.oauth2_proxy_raw_path
         upstreams = var.upstreams
       }
       injectRequestHeaders  = var.oauth2_proxy_inject_request_headers
