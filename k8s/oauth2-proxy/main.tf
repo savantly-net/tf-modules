@@ -80,7 +80,7 @@ resource "helm_release" "chart" {
   namespace         = local.namespace
   atomic            = true
   wait              = true
-  timeout           = 6000
+  timeout           = 3000
   dependency_update = true
   lint              = true
   force_update      = local.helm_force_update
