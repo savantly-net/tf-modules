@@ -32,17 +32,17 @@ locals {
       injectResponseHeaders = var.oauth2_proxy_inject_response_headers
       providers = [
         {
-          id           = "oidc"
-          clientID     = var.oidc_client_id
-          clientSecret = var.oidc_client_secret
-          provider     = local.oauth2_proxy_provider
-          name         = local.provider_display_name
-          scope        = var.oidc_scope
-
-          loginURL    = var.oidc_auth_url
-          redeemURL   = var.oidc_token_url
-          profileURL  = var.oidc_user_info_url
-          validateURL = var.oidc_user_info_url
+          id            = "oidc"
+          clientID      = var.oidc_client_id
+          clientSecret  = var.oidc_client_secret
+          provider      = local.oauth2_proxy_provider
+          name          = local.provider_display_name
+          scope         = var.oidc_scope
+          loginURL      = var.oidc_auth_url
+          redeemURL     = var.oidc_token_url
+          profileURL    = var.oidc_user_info_url
+          validateURL   = var.oidc_user_info_url
+          allowedGroups = var.oidc_allowed_groups
           oidcConfig = {
             issuerURL                      = var.oidc_issuer_url
             jwksURL                        = var.oidc_jwks_url

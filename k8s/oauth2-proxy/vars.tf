@@ -54,6 +54,11 @@ variable "oidc_scope" {
   default = "openid email profile"
 }
 
+variable "oidc_allowed_groups" {
+  type = list(string)
+  default = []
+}
+
 
 variable "public_host" {
   type = string
